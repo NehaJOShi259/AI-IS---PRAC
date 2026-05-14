@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diffie-Hellman Key Exchange</title>
+</head>
+<body>
+
+<h2>Diffie–Hellman Key Exchange</h2>
+
+<label>Prime Number (p): </label>
+<input type="number" id="p" value="23"><br><br>
+
+<label>Primitive Root (g): </label>
+<input type="number" id="g" value="5"><br><br>
+
+<label>Alice's Private Key: </label>
+<input type="number" id="alicePrivate" value="6"><br><br>
+
+<button onclick="calculate()">Generate Shared Key</button>
+
+<h3>Results:</h3>
+
+<p id="output"></p>
+
+<script>
+function modPow(base, exp, mod) {
+    let result = 1;
+    base = base % mod;
+    while (exp > 0) {
+        if (exp % 2 === 1)
+            result = (result * base) % mod;
+        exp = Math.floor(exp / 2);
+        base = (base * base) % mod;
+    }
+    return result;
+}
+
+function calculate() {
+    let p = parseInt(document.getElementById("p").value);
+    let g = parseInt(document.getElementById("g").value);
+    let alicePrivate = parseInt(document.getElementById("alicePrivate").value);
+
+    // Bob private key (random)
+    let bobPrivate = Math.floor(Math.random() * 10) + 1;
+
+    // Public keys
+    let alicePublic = modPow(g, alicePrivate, p);
+    let bobPublic = modPow(g, bobPrivate, p);
+
+    // Shared secret
+    let aliceSecret = modPow(bobPublic, alicePrivate, p);
+    let bobSecret = modPow(alicePublic, bobPrivate, p);
+
+    document.getElementById("output").innerHTML =
+        "<b>Bob's Private Key:</b> " + bobPrivate + "<br><br>" +
+        "<b>Alice Public Key:</b> " + alicePublic + "<br>" +
+        "<b>Bob Public Key:</b> " + bobPublic + "<br><br>" +
+        "<b>Alice Shared Secret:</b> " + aliceSecret + "<br>" +
+        "<b>Bob Shared Secret:</b> " + bobSecret + "<br><br>" +
+        "<b>Key Exchange Successful? </b>" + (aliceSecret === bobSecret);
+}
+</script>
+
+</body>
+</html>
+
+
+
+==========================================
+
+Prime Number (p): 23
+Primitive Root (g): 5
+Alice's Private Key: 6
