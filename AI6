@@ -1,0 +1,116 @@
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+struct Job {
+    char id;
+    int deadline;
+    int profit;
+};
+
+bool compare(Job a, Job b) {
+    return a.profit > b.profit;
+}
+
+int main() {
+
+    Job jobs[] = {
+        {'A', 2, 100},
+        {'B', 1, 19},
+        {'C', 2, 27},
+        {'D', 1, 25},
+        {'E', 3, 15}
+    };
+
+    int n = sizeof(jobs)/sizeof(jobs[0]);
+
+    sort(jobs, jobs + n, compare);
+
+    int maxDeadline = 3;
+    char result[3];
+    bool slot[3] = {false};
+
+    for(int i = 0; i < n; i++) {
+        for(int j = jobs[i].deadline - 1; j >= 0; j--) {
+            if(!slot[j]) {
+                result[j] = jobs[i].id;
+                slot[j] = true;
+                break;
+            }
+        }
+    }
+
+    cout << "Selected Jobs: ";
+    for(int i = 0; i < maxDeadline; i++)
+        if(slot[i])
+            cout << result[i] << " ";
+
+    return 0;
+}
+
+
+======================================================================================================
+
+
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+typedef pair<int, int> pii;
+
+int main() {
+
+    int V = 5;
+    vector<pii> adj[5];
+
+    // Undirected weighted graph
+    adj[0].push_back({1,2});
+    adj[1].push_back({0,2});
+
+    adj[0].push_back({3,6});
+    adj[3].push_back({0,6});
+
+    adj[1].push_back({2,3});
+    adj[2].push_back({1,3});
+
+    adj[1].push_back({3,8});
+    adj[3].push_back({1,8});
+
+    adj[1].push_back({4,5});
+    adj[4].push_back({1,5});
+
+    adj[2].push_back({4,7});
+    adj[4].push_back({2,7});
+
+    adj[3].push_back({4,9});
+    adj[4].push_back({3,9});
+
+    priority_queue<pii, vector<pii>, greater<pii>> pq;
+
+    vector<bool> inMST(V, false);
+    pq.push({0,0});
+
+    int totalCost = 0;
+
+    while(!pq.empty()) {
+        int weight = pq.top().first;
+        int u = pq.top().second;
+        pq.pop();
+
+        if(inMST[u]) continue;
+
+        inMST[u] = true;
+        totalCost += weight;
+
+        for(auto x : adj[u]) {
+            if(!inMST[x.first]) {
+                pq.push({x.second, x.first});
+            }
+        }
+    }
+
+    cout << "Total cost of MST: " << totalCost;
+
+    return 0;
+}
