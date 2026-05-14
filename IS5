@@ -1,0 +1,75 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+// Function to calculate gcd
+int gcd(int a, int b) {
+    if (b == 0)
+        return a;
+    return gcd(b, a % b);
+}
+
+// Function to find modular inverse (for small numbers)
+int modInverse(int e, int phi) {
+    for (int d = 1; d < phi; d++) {
+        if ((d * e) % phi == 1)
+            return d;
+    }
+    return -1;
+}
+
+// Fast modular exponentiation
+long long modPow(long long base, long long exp, long long mod) {
+    long long result = 1;
+    while (exp > 0) {
+        if (exp % 2 == 1)
+            result = (result * base) % mod;
+        base = (base * base) % mod;
+        exp = exp / 2;
+    }
+    return result;
+}
+
+int main() {
+    int p, q;
+
+    cout << "Enter two prime numbers (p and q): ";
+    cin >> p >> q;
+
+    int n = p * q;
+    int phi = (p - 1) * (q - 1);
+
+    int e;
+    cout << "Enter public exponent e (1 < e < " << phi << " and gcd(e, phi) = 1): ";
+    cin >> e;
+
+    if (gcd(e, phi) != 1) {
+        cout << "Invalid e! gcd(e, phi) must be 1.\n";
+        return 0;
+    }
+
+    int d = modInverse(e, phi);
+
+    cout << "\nPublic Key (e, n): (" << e << ", " << n << ")";
+    cout << "\nPrivate Key (d, n): (" << d << ", " << n << ")\n";
+
+    int message;
+    cout << "\nEnter message (number < " << n << "): ";
+    cin >> message;
+
+    long long cipher = modPow(message, e, n);
+    cout << "Encrypted Message: " << cipher << endl;
+
+    long long decrypted = modPow(cipher, d, n);
+    cout << "Decrypted Message: " << decrypted << endl;
+
+    return 0;
+}
+
+
+===========================================================
+
+
+Enter two prime numbers (p and q): 3 11
+Enter public exponent e: 3
+Enter message: 7
