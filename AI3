@@ -1,0 +1,56 @@
+#include <iostream>
+#include <map>
+#include <vector>
+using namespace std;
+
+map<char, int> heuristic;
+map<char, vector<vector<char>>> graph;
+map<char, int> solvedCost;
+
+int AOStar(char node) {
+    // If already solved, return stored cost
+    if (solvedCost.find(node) != solvedCost.end())
+        return solvedCost[node];
+
+    // If no children, return heuristic
+    if (graph[node].empty())
+        return heuristic[node];
+
+    int minCost = 9999;
+
+    // Iterate through OR choices
+    for (auto andNodes : graph[node]) {
+        int cost = 0;
+
+        // AND nodes cost = sum of child costs
+        for (char child : andNodes) {
+            cost += AOStar(child);
+        }
+
+        if (cost < minCost)
+            minCost = cost;
+    }
+
+    solvedCost[node] = heuristic[node] + minCost;
+    return solvedCost[node];
+}
+
+int main() {
+
+    // Heuristic values
+    heuristic['A'] = 1;
+    heuristic['B'] = 3;
+    heuristic['C'] = 2;
+    heuristic['D'] = 4;
+    heuristic['E'] = 6;
+    heuristic['F'] = 5;
+
+    // Graph definition (AND-OR)
+    graph['A'] = {{'B'}, {'C','D'}}; // OR between (B) OR (C AND D)
+    graph['B'] = {{'E'}};
+    graph['C'] = {{'F'}};
+
+    cout << "Minimum cost to solve A: " << AOStar('A');
+
+    return 0;
+}
