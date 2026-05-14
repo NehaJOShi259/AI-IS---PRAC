@@ -1,0 +1,99 @@
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+string encrypt(string text, string key) {
+    int col = key.length();
+    int row = (text.length() + col - 1) / col;
+
+    char matrix[row][col];
+
+    // Fill matrix row-wise
+    int k = 0;
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
+            if (k < text.length())
+                matrix[i][j] = text[k++];
+            else
+                matrix[i][j] = 'X'; // padding
+        }
+    }
+
+    string cipher = "";
+
+    // Read columns according to key order
+    for (int num = 1; num <= col; num++) {
+        for (int j = 0; j < col; j++) {
+            if (key[j] - '0' == num) {
+                for (int i = 0; i < row; i++) {
+                    cipher += matrix[i][j];
+                }
+            }
+        }
+    }
+
+    return cipher;
+}
+
+string decrypt(string cipher, string key) {
+    int col = key.length();
+    int row = (cipher.length() + col - 1) / col;
+
+    char matrix[row][col];
+
+    int k = 0;
+
+    // Fill column-wise based on key
+    for (int num = 1; num <= col; num++) {
+        for (int j = 0; j < col; j++) {
+            if (key[j] - '0' == num) {
+                for (int i = 0; i < row; i++) {
+                    matrix[i][j] = cipher[k++];
+                }
+            }
+        }
+    }
+
+    string text = "";
+
+    // Read row-wise to get original text
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
+            text += matrix[i][j];
+        }
+    }
+
+    return text;
+}
+
+int main() {
+    string text, key;
+
+    cout << "Enter Plain Text (no spaces): ";
+    cin >> text;
+
+    cout << "Enter Numeric Key (e.g., 4312567): ";
+    cin >> key;
+
+    string cipher = encrypt(text, key);
+    cout << "\nEncrypted Text: " << cipher << endl;
+
+    string decrypted = decrypt(cipher, key);
+    cout << "Decrypted Text: " << decrypted << endl;
+
+    return 0;
+}
+
+
+============================================================================
+How It Works
+
+Encryption:
+Write message row-wise in matrix
+Read columns in order of key numbers
+Add padding X if needed
+
+Decryption:
+Fill matrix column-wise using key order
+Read row-wise
+Get original message
