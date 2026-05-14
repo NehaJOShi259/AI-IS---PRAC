@@ -1,0 +1,39 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+
+    string input;
+
+    cout << "Simple Customer Chatbot\n";
+    cout << "Type 'exit' to stop\n\n";
+
+    while(true) {
+
+        cout << "You: ";
+        getline(cin, input);
+
+        if(input == "hello" || input == "hi") {
+            cout << "Bot: Hello! How can I help you today?\n";
+        }
+        else if(input == "price") {
+            cout << "Bot: Our product price starts from 499 Rs.\n";
+        }
+        else if(input == "delivery") {
+            cout << "Bot: Delivery takes 3-5 working days.\n";
+        }
+        else if(input == "refund") {
+            cout << "Bot: Refund is available within 7 days.\n";
+        }
+        else if(input == "exit") {
+            cout << "Bot: Thank you for visiting. Goodbye!\n";
+            break;
+        }
+        else {
+            cout << "Bot: Sorry, I didn't understand that.\n";
+        }
+    }
+
+    return 0;
+}
