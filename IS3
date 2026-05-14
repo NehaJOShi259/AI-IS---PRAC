@@ -1,0 +1,51 @@
+#include <iostream>
+#include <bitset>
+using namespace std;
+
+string xor_op(string a, string b) {
+    string result = "";
+    for (int i = 0; i < a.length(); i++)
+        result += (a[i] == b[i]) ? '0' : '1';
+    return result;
+}
+
+string simple_round(string right, string key) {
+    // Simplified round function (XOR only for demo)
+    return xor_op(right, key);
+}
+
+string des_encrypt(string plaintext, string key) {
+    string left = plaintext.substr(0, 32);
+    string right = plaintext.substr(32, 32);
+
+    for (int i = 0; i < 16; i++) {
+        string temp = right;
+        right = xor_op(left, simple_round(right, key));
+        left = temp;
+    }
+
+    return right + left;  // Final swap
+}
+
+int main() {
+    string plaintext, key;
+
+    cout << "Enter 64-bit binary plaintext: ";
+    cin >> plaintext;
+
+    cout << "Enter 32-bit binary key: ";
+    cin >> key;
+
+    string cipher = des_encrypt(plaintext, key);
+    cout << "Encrypted Text: " << cipher << endl;
+
+    return 0;
+}
+
+=====================================================================================
+
+Enter 64-bit binary plaintext:
+1010101010111011000010010001100000100111001101101100110011011101
+
+Enter 32-bit binary key:
+10101010101110110000100100011000
